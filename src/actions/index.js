@@ -1,4 +1,4 @@
-import { GET_DATA, ADD_TASK } from "./types";
+import { GET_DATA } from "./types";
 import axios from "axios";
 
 export const getData = () => async (dispatch) => {
