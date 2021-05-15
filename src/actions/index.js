@@ -1,7 +1,7 @@
 import { GET_DATA, LOGIN } from "./types";
 import axios from "axios";
 
-const baseURL = "http://localhost:5000/todos/";
+const baseURL = "https://todo-backend-lokesh.herokuapp.com/todos/";
 
 export const getData = () => async (dispatch) => {
   const res = await axios.get(baseURL);
