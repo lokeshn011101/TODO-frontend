@@ -27,3 +27,9 @@ body {
 .tasks {
   overflow-x: hidden;
 }
+.header {
+  height: 10%;
+}
+.home-container {
+  height: 90%;
+}

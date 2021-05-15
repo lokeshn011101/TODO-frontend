@@ -1,35 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getData, addTask } from "../actions";
-
-class Tasks extends Component {
-  render() {
-    return (
-      <div className="tasks w-5/6 h-5/6 smm:w-full mt-10 mb-2 overflow-scroll">
-        {Object.keys(this.props.data).length ? (
-          this.props.data.map((el) => {
-            return (
-              <div
-                key={el.id}
-                className="old-task h-11 my-2 bg-gray-400 text-white rounded-sm smm:px-2 px-4 flex flex-row items-center"
-              >
-                {el.task}
-              </div>
-            );
-          })
-        ) : (
-          <></>
-        )}
-      </div>
-    );
-  }
-}
+import { getData, addTask, deleteTask } from "../actions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import Tasks from "./Tasks";
+import Filters from "./Filters";
 
 class Home extends Component {
   state = { formiptxt: "", formipdt: "" };
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
+    this.formIpDate = React.createRef();
+    this.formIp = React.createRef();
   }
   componentDidMount() {
     this.props.getData();
@@ -37,43 +20,66 @@ class Home extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state.formipdt, this.state.formiptxt);
-
     this.props.addTask(this.state.formipdt, this.state.formiptxt);
-
     this.setState({ formipdt: "", formiptxt: "" });
     this.formRef.reset();
   };
 
+  onDelete = (e) => {
+    if (e.target.tagName === "svg")
+      this.props.deleteTask(parseInt(e.target.parentElement.id));
+    else
+      this.props.deleteTask(parseInt(e.target.parentElement.parentElement.id));
+  };
+  onEdit = (e) => {
+    let task, dt, id;
+    if (e.target.tagName === "svg") {
+      id = e.target.parentElement.id;
+      dt = e.target.parentElement.firstChild.childNodes[1];
+      task = e.target.parentElement.firstChild.childNodes[0];
+    } else {
+      id = e.target.parentElement.parentElement.id;
+      dt = e.target.parentElement.parentElement.firstChild.childNodes[1];
+      task = e.target.parentElement.parentElement.firstChild.childNodes[0];
+    }
+    this.formIp.current.value = task.outerText;
+    this.formIpDate.current.value = dt.outerText;
+    this.setState({ formiptxt: task.outerText });
+    this.setState({ formipdt: dt.outerText });
+    this.props.deleteTask(id);
+  };
   render() {
-    const today = new Date();
+    console.log(this.props);
     return (
-      <div className="home-container p-5 h-screen flex flex-col justify-between items-center">
-        <div className="date-and-profile w-full h-12 flex flex-row justify-between">
-          <div className="title-div">
-            <h1 className="title text-3xl md:text-4xl">Todo</h1>
-            <h3 className="subtitle">{today.toDateString()}</h3>
-          </div>
-          <div className="profile mr-2">Profile</div>
-        </div>
+      <div className="home-container p-5 pt-0 flex flex-col justify-between items-center">
+        <Filters history={this.props.history} />
+        <Tasks
+          data={this.props.data}
+          onDelete={this.onDelete}
+          onEdit={this.onEdit}
+        />
 
-        <Tasks data={this.props.data} />
-
-        <div className="new-task h-11 w-5/6 smm:w-full bg-gray-600 text-white rounded-sm smm:px-2 px-4 flex flex-row items-center">
+        <div className="new-task h-14 w-5/6 smm:w-full bg-gray-600 text-white rounded-sm smm:px-2 px-4 flex flex-row items-center">
           <form
             onSubmit={(e) => this.onSubmit(e)}
             className="flex flex-row justify-between w-full"
             ref={(el) => (this.formRef = el)}
           >
+            <FontAwesomeIcon
+              icon={faPlus}
+              className="h-full pt-1 text-gray-300"
+            />
             <input
-              className=" tasks-input w-full h-full bg-gray-600 text-white outline-none"
+              ref={this.formIp}
+              className=" tasks-input w-full h-full bg-gray-600 text-white outline-none pl-4"
               type="text"
-              placeholder="+ Add a task"
+              placeholder=" Add a task"
               id="tasks-ip"
               autoComplete="off"
               onChange={(e) => this.setState({ formiptxt: e.target.value })}
             />
             <input
+              ref={this.formIpDate}
               type="date"
               id="due_by"
               name="due_by"
@@ -97,4 +103,4 @@ const mapStateToProps = (state) => {
   return { data: Object.values(state.data) };
 };
 
-export default connect(mapStateToProps, { getData, addTask })(Home);
+export default connect(mapStateToProps, { getData, addTask, deleteTask })(Home);
