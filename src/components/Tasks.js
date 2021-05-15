@@ -3,6 +3,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "../App.css";
 
+const Emojis = ({ status }) => {
+  if (status === "not_started")
+    return (
+      <div className="flex flex-row">
+        <button className="m-3">⏳</button>
+        <button className="m-3">✔</button>
+      </div>
+    );
+  else if (status === "finished")
+    return (
+      <div className="flex flex-row">
+        <button className="m-3">❗</button>
+        <button className="m-3">⏳</button>
+      </div>
+    );
+  else
+    return (
+      <div className="flex flex-row">
+        <button className="m-3">❗</button>
+        <button className="m-3">✔</button>
+      </div>
+    );
+};
+
 class Tasks extends Component {
   render() {
     const color = {
@@ -32,6 +56,7 @@ class Tasks extends Component {
                 </div>
                 {this.props.user === "Admin" ? (
                   <>
+                    <Emojis status={el.statuss} />
                     <FontAwesomeIcon
                       icon={faPencilAlt}
                       className="m-3 cursor-pointer"

@@ -12,14 +12,12 @@ class Login extends Component {
 
   onFormSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state.uname, this.state.pwd);
     this.props.login(this.state.uname, this.state.pwd);
     this.setState({ uname: "", ped: "" });
     this.lform.current.reset();
   };
 
   render() {
-    console.log(this.props.auth);
     if (this.props.auth === "Admin") return <Home user="Admin" />;
     else if (this.props.auth === "User") return <Home user="User" />;
     else {

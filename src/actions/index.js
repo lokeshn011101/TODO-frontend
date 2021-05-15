@@ -1,17 +1,18 @@
 import { GET_DATA, LOGIN } from "./types";
 import axios from "axios";
 
-const baseURL = "https://todo-backend-lokesh.herokuapp.com/todos/";
+const baseURL = "http://localhost:5000/todos/";
 
 export const getData = () => async (dispatch) => {
   const res = await axios.get(baseURL);
   dispatch({ type: GET_DATA, payload: res.data });
 };
 
-export const addTask = (dt, txt) => async (dispatch) => {
+export const addTask = (dt, txt, status) => async (dispatch) => {
   const res = await axios.post(baseURL, {
     due_by: dt,
     task: txt,
+    statuss: status,
   });
   dispatch({ type: GET_DATA, payload: res.data });
 };
@@ -30,4 +31,24 @@ export const login = (username, password) => async (dispatch) => {
     },
   });
   dispatch({ type: LOGIN, payload: res.data });
+};
+
+export const getDataOd = () => async (dispatch) => {
+  const res = await axios.get(baseURL + "overdue");
+  dispatch({ type: GET_DATA, payload: res.data });
+};
+
+export const getDataFs = () => async (dispatch) => {
+  const res = await axios.get(baseURL + "finished");
+  dispatch({ type: GET_DATA, payload: res.data });
+};
+
+export const getDataDb = (date) => async (dispatch) => {
+  console.log(date);
+  const res = await axios.get(baseURL + "due", {
+    params: {
+      due_by: date,
+    },
+  });
+  dispatch({ type: GET_DATA, payload: res.data });
 };

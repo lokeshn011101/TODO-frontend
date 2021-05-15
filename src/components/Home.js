@@ -1,14 +1,65 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getData, addTask, deleteTask } from "../actions";
+import {
+  getData,
+  addTask,
+  deleteTask,
+  getDataOd,
+  getDataFs,
+  getDataDb,
+} from "../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Tasks from "./Tasks";
 import Filters from "./Filters";
 import Header from "./Header.js";
 
+const CurFilter = ({ currentFilter, onFilter }) => {
+  if (currentFilter === "Home")
+    return (
+      <Filters
+        one={"Overdue"}
+        two={"Finished"}
+        three={"Due By"}
+        onFilter={onFilter}
+      />
+    );
+  else if (currentFilter === "Overdue")
+    return (
+      <Filters
+        one={"Home"}
+        two={"Finished"}
+        three={"Due By"}
+        onFilter={onFilter}
+      />
+    );
+  else if (currentFilter === "Finished")
+    return (
+      <Filters
+        one={"Home"}
+        two={"Overdue"}
+        three={"Due By"}
+        onFilter={onFilter}
+      />
+    );
+  else
+    return (
+      <Filters
+        one={"Home"}
+        two={"Overdue"}
+        three={"Finished"}
+        onFilter={onFilter}
+      />
+    );
+};
+
 class Home extends Component {
-  state = { formiptxt: "", formipdt: "" };
+  state = {
+    formiptxt: "",
+    formipdt: "",
+    status: "not_started",
+    currentFilter: "Home",
+  };
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
@@ -19,10 +70,36 @@ class Home extends Component {
     this.props.getData();
   }
 
+  onFilter = (e, dt = null) => {
+    this.setState({ currentFilter: e });
+    switch (e) {
+      case "Home":
+        this.props.getData();
+        break;
+      case "Overdue":
+        this.props.getDataOd();
+        break;
+      case "Finished":
+        this.props.getDataFs();
+        break;
+      case "Due By":
+        this.props.getDataDb(dt);
+        break;
+      default:
+        this.props.getData();
+        break;
+    }
+  };
+
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.addTask(this.state.formipdt, this.state.formiptxt);
-    this.setState({ formipdt: "", formiptxt: "" });
+    console.log(this.state.status);
+    this.props.addTask(
+      this.state.formipdt,
+      this.state.formiptxt,
+      this.state.status
+    );
+    this.setState({ formipdt: "", formiptxt: "", status: "not_started" });
     this.formRef.reset();
   };
 
@@ -54,7 +131,10 @@ class Home extends Component {
       <>
         <Header />
         <div className="home-container p-5 pt-0 flex flex-col justify-between items-center">
-          <Filters history={this.props.history} />
+          <CurFilter
+            currentFilter={this.state.currentFilter}
+            onFilter={this.onFilter}
+          />
           <Tasks
             user={this.props.user}
             data={this.props.data}
@@ -63,7 +143,7 @@ class Home extends Component {
           />
 
           {this.props.user === "Admin" ? (
-            <div className="new-task h-14 w-5/6 smm:w-full bg-gray-600 text-white rounded-sm smm:px-2 px-4 flex flex-row items-center">
+            <div className="new-task h-20 w-5/6 smm:w-full bg-gray-600 text-white rounded-sm smm:px-2 px-4 flex flex-row items-center">
               <form
                 onSubmit={(e) => this.onSubmit(e)}
                 className="flex flex-row justify-between w-full"
@@ -91,6 +171,19 @@ class Home extends Component {
                   placeholder="Due Date"
                   onChange={(e) => this.setState({ formipdt: e.target.value })}
                 />
+                <select
+                  name="Progress"
+                  id="stat-drp"
+                  className="text-black ml-5 px-3"
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    this.setState({ status: e.target.value });
+                  }}
+                >
+                  <option value="in_progress">In Progress</option>
+                  <option value="not_started">Not Started</option>
+                  <option value="finished">Finished</option>
+                </select>
                 <input
                   type="submit"
                   className="form-submit bg-transparent rounded cursor-pointer pl-10"
@@ -111,4 +204,11 @@ const mapStateToProps = (state) => {
   return { data: Object.values(state.data) };
 };
 
-export default connect(mapStateToProps, { getData, addTask, deleteTask })(Home);
+export default connect(mapStateToProps, {
+  getData,
+  addTask,
+  deleteTask,
+  getDataOd,
+  getDataFs,
+  getDataDb,
+})(Home);
