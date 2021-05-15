@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Tasks from "./Tasks";
 import Filters from "./Filters";
+import Header from "./Header.js";
 
 class Home extends Component {
   state = { formiptxt: "", formipdt: "" };
@@ -49,52 +50,59 @@ class Home extends Component {
     this.props.deleteTask(id);
   };
   render() {
-    console.log(this.props);
     return (
-      <div className="home-container p-5 pt-0 flex flex-col justify-between items-center">
-        <Filters history={this.props.history} />
-        <Tasks
-          data={this.props.data}
-          onDelete={this.onDelete}
-          onEdit={this.onEdit}
-        />
+      <>
+        <Header />
+        <div className="home-container p-5 pt-0 flex flex-col justify-between items-center">
+          <Filters history={this.props.history} />
+          <Tasks
+            user={this.props.user}
+            data={this.props.data}
+            onDelete={this.onDelete}
+            onEdit={this.onEdit}
+          />
 
-        <div className="new-task h-14 w-5/6 smm:w-full bg-gray-600 text-white rounded-sm smm:px-2 px-4 flex flex-row items-center">
-          <form
-            onSubmit={(e) => this.onSubmit(e)}
-            className="flex flex-row justify-between w-full"
-            ref={(el) => (this.formRef = el)}
-          >
-            <FontAwesomeIcon
-              icon={faPlus}
-              className="h-full pt-1 text-gray-300"
-            />
-            <input
-              ref={this.formIp}
-              className=" tasks-input w-full h-full bg-gray-600 text-white outline-none pl-4"
-              type="text"
-              placeholder=" Add a task"
-              id="tasks-ip"
-              autoComplete="off"
-              onChange={(e) => this.setState({ formiptxt: e.target.value })}
-            />
-            <input
-              ref={this.formIpDate}
-              type="date"
-              id="due_by"
-              name="due_by"
-              className="task-date-ip bg-gray-600 text-gray-600 outline-none"
-              placeholder="Due Date"
-              onChange={(e) => this.setState({ formipdt: e.target.value })}
-            />
-            <input
-              type="submit"
-              className="form-submit bg-transparent rounded cursor-pointer pl-10"
-              value="✅"
-            />
-          </form>
+          {this.props.user === "Admin" ? (
+            <div className="new-task h-14 w-5/6 smm:w-full bg-gray-600 text-white rounded-sm smm:px-2 px-4 flex flex-row items-center">
+              <form
+                onSubmit={(e) => this.onSubmit(e)}
+                className="flex flex-row justify-between w-full"
+                ref={(el) => (this.formRef = el)}
+              >
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  className="h-full pt-1 text-gray-300"
+                />
+                <input
+                  ref={this.formIp}
+                  className=" tasks-input w-full h-full bg-gray-600 text-white outline-none pl-4"
+                  type="text"
+                  placeholder=" Add a task"
+                  id="tasks-ip"
+                  autoComplete="off"
+                  onChange={(e) => this.setState({ formiptxt: e.target.value })}
+                />
+                <input
+                  ref={this.formIpDate}
+                  type="date"
+                  id="due_by"
+                  name="due_by"
+                  className="task-date-ip bg-gray-600 text-gray-600 outline-none"
+                  placeholder="Due Date"
+                  onChange={(e) => this.setState({ formipdt: e.target.value })}
+                />
+                <input
+                  type="submit"
+                  className="form-submit bg-transparent rounded cursor-pointer pl-10"
+                  value="✅"
+                />
+              </form>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
-      </div>
+      </>
     );
   }
 }

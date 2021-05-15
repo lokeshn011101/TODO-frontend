@@ -30,16 +30,22 @@ class Tasks extends Component {
                     {el.due_by}
                   </div>
                 </div>
-                <FontAwesomeIcon
-                  icon={faPencilAlt}
-                  className="m-3 cursor-pointer"
-                  onClick={(e) => this.props.onEdit(e)}
-                />
-                <FontAwesomeIcon
-                  icon={faTrash}
-                  className="m-3 cursor-pointer"
-                  onClick={(e) => this.props.onDelete(e)}
-                />
+                {this.props.user === "Admin" ? (
+                  <>
+                    <FontAwesomeIcon
+                      icon={faPencilAlt}
+                      className="m-3 cursor-pointer"
+                      onClick={(e) => this.props.onEdit(e)}
+                    />
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      className="m-3 cursor-pointer"
+                      onClick={(e) => this.props.onDelete(e)}
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
             );
           })

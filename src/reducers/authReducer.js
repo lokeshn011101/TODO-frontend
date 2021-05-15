@@ -1,8 +1,8 @@
-import { AUTH } from "../actions/types";
-const authReducer = (state, action) => {
+import { LOGIN } from "../actions/types";
+const authReducer = (state = {}, action) => {
   switch (action.type) {
-    case AUTH:
-      return { ...state };
+    case LOGIN:
+      return action.payload;
     default:
       return state;
   }
