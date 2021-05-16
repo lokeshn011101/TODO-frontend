@@ -7,12 +7,14 @@ import {
   getDataOd,
   getDataFs,
   getDataDb,
+  updateTaskStatus,
 } from "../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Tasks from "./Tasks";
 import Filters from "./Filters";
 import Header from "./Header.js";
+import Loader from "./Loader";
 
 const CurFilter = ({ currentFilter, onFilter }) => {
   if (currentFilter === "Home")
@@ -126,9 +128,18 @@ class Home extends Component {
     this.setState({ formipdt: dt.outerText });
     this.props.deleteTask(id);
   };
+  onStatusChange = (e) => {
+    let stat = "",
+      statee = e.target.innerHTML;
+    if (statee == "❗") stat = "not_started";
+    else if (statee == "✔") stat = "finished";
+    else if (statee == "⏳") stat = "in_progress";
+    this.props.updateTaskStatus(e.target.id, stat);
+  };
   render() {
     return (
       <>
+        <Loader />
         <Header />
         <div className="home-container p-5 pt-0 flex flex-col justify-between items-center">
           <CurFilter
@@ -140,6 +151,7 @@ class Home extends Component {
             data={this.props.data}
             onDelete={this.onDelete}
             onEdit={this.onEdit}
+            onStatusChange={this.onStatusChange}
           />
 
           {this.props.user === "Admin" ? (
@@ -175,10 +187,7 @@ class Home extends Component {
                   name="Progress"
                   id="stat-drp"
                   className="text-black ml-5 px-3"
-                  onChange={(e) => {
-                    console.log(e.target.value);
-                    this.setState({ status: e.target.value });
-                  }}
+                  onChange={(e) => this.setState({ status: e.target.value })}
                 >
                   <option value="in_progress">In Progress</option>
                   <option value="not_started">Not Started</option>
@@ -211,4 +220,5 @@ export default connect(mapStateToProps, {
   getDataOd,
   getDataFs,
   getDataDb,
+  updateTaskStatus,
 })(Home);

@@ -3,26 +3,68 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "../App.css";
 
-const Emojis = ({ status }) => {
+const Emojis = ({ status, id, onStatusChange }) => {
   if (status === "not_started")
     return (
       <div className="flex flex-row">
-        <button className="m-3">⏳</button>
-        <button className="m-3">✔</button>
+        <button
+          value="in_progress"
+          className="m-3"
+          id={id}
+          onClick={(e) => onStatusChange(e)}
+        >
+          ⏳
+        </button>
+        <button
+          value="finished"
+          className="m-3"
+          id={id}
+          onClick={(e) => onStatusChange(e)}
+        >
+          ✔
+        </button>
       </div>
     );
   else if (status === "finished")
     return (
       <div className="flex flex-row">
-        <button className="m-3">❗</button>
-        <button className="m-3">⏳</button>
+        <button
+          value="not_started"
+          className="m-3"
+          id={id}
+          onClick={(e) => onStatusChange(e)}
+        >
+          ❗
+        </button>
+        <button
+          value="in_progress"
+          className="m-3"
+          id={id}
+          onClick={(e) => onStatusChange(e)}
+        >
+          ⏳
+        </button>
       </div>
     );
   else
     return (
       <div className="flex flex-row">
-        <button className="m-3">❗</button>
-        <button className="m-3">✔</button>
+        <button
+          value="not_started"
+          className="m-3"
+          id={id}
+          onClick={(e) => onStatusChange(e)}
+        >
+          ❗
+        </button>
+        <button
+          value="finished"
+          className="m-3"
+          id={id}
+          onClick={(e) => onStatusChange(e)}
+        >
+          ✔
+        </button>
       </div>
     );
 };
@@ -56,7 +98,11 @@ class Tasks extends Component {
                 </div>
                 {this.props.user === "Admin" ? (
                   <>
-                    <Emojis status={el.statuss} />
+                    <Emojis
+                      status={el.statuss}
+                      id={el.id}
+                      onStatusChange={this.props.onStatusChange}
+                    />
                     <FontAwesomeIcon
                       icon={faPencilAlt}
                       className="m-3 cursor-pointer"

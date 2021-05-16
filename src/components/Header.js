@@ -11,7 +11,12 @@ class Header extends Component {
             <h1 className="title text-3xl md:text-4xl">Todo</h1>
             <h3 className="subtitle">{today.toDateString()}</h3>
           </div>
-          <div className="profile mr-2">Refresh to Logout!</div>
+          <button
+            className="profile mr-4 bg-gray-200 rounded-sm px-4"
+            onClick={(e) => window.location.reload()}
+          >
+            Logout!
+          </button>
         </div>
       </div>
     );
