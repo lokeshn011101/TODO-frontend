@@ -1,7 +1,7 @@
 import { GET_DATA, LOGIN } from "./types";
 import axios from "axios";
 
-const baseURL = "http://127.0.0.1:5000/todos/";
+const baseURL = "https://todo-backend-lokesh.herokuapp.com/todos/";
 
 export const getData = () => async (dispatch) => {
   document.getElementById("lineloader").style.display = "block";
